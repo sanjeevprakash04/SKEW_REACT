@@ -1,0 +1,55 @@
+.log {
+    display: flex;
+    flex-direction: column;
+}
+
+.log-title-content {
+    padding-top: 15px;
+    display: flex;
+    font-size: 12px;
+    font-weight: bold;
+    color: #103782;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.log-title {
+    padding-top: 10px;
+}
+
+.buttons {
+    display: flex;
+}
+
+.buttons .b1{
+    height: 40px;
+    width: 150px;
+    background-color: #103782;
+    color: white;
+    font-size: 14px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.buttons .b1:hover {
+    background-color: #166afc;;
+}
+
+.log hr {
+    margin-left: 5px;
+    margin-right: 5px;
+    border-color: #103782;
+}
+
+.log-view {
+    margin: 10px;
+    overflow-y: auto;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    min-height: calc(100vh - 185px);
+}

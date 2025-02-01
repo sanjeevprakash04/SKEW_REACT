@@ -1,0 +1,25 @@
+.help {
+    display: flex;
+    flex-direction: column;
+}
+
+.help-title-content {
+    padding-top: 15px;
+    display: flex;
+    font-size: 12px;
+    font-weight: bold;
+    color: #103782;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.help-title {
+    padding-top: 10px;
+}
+
+.help hr {
+    margin-left: 5px;
+    margin-right: 5px;
+    border-color: #103782;
+}

@@ -1,0 +1,196 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+.sidebar {
+  background-color: var(--white-color);
+  width: 260px; /* Default sidebar width */
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  padding: 80px 20px;
+  z-index: 100;
+  overflow-y: scroll;
+  box-shadow: 0 0 1px var(--grey-color-light);
+  transition: width 0.5s ease, padding 0.5s ease; /* Smooth transition for width and padding */
+}
+
+.sidebar.close {
+  padding: 60px 0;
+  width: 80px;
+}
+
+.sidebar.open {
+  padding: 60px 0;
+  width: 210px;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.menu_content {
+  position: relative;
+}
+
+.menu_title {
+  margin: 15px 0;
+  padding: 0 20px;
+  font-size: 18px;
+  transition: padding 0.5s ease; /* Smooth transition for padding */
+}
+
+.sidebar.close .menu_title {
+  padding: 6px;
+}
+
+.sidebar.open .menu_title {
+  padding: 6px 15px;
+}
+
+.menu_items {
+  padding-top: 20px;
+  list-style: none;
+  transition: padding 0.5s ease; /* Smooth transition for padding */
+}
+
+.navlink_icon {
+  color: #103782;
+  margin-top: 4px;
+  position:static;
+  font-size: 25px;
+  min-width: 50px;
+  line-height: 40px;
+  display: inline-block;
+  text-align: center;
+  transition: color 0.1s ease; /* Smooth transition for icon color */
+}
+
+.sidebar .nav_link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 4px 15px;
+  text-decoration: none;
+  color: var(--grey-color);
+  white-space: nowrap;
+  transition: background-color 0.1s ease, color 0.1s ease; /* Smooth hover transition */
+}
+
+.sidebar.close .navlink {
+  display: none;
+}
+
+.nav_link:hover {
+  background-color: #eaedf2;
+  transition: background-color 0.1s ease; /* Smooth hover effect */
+}
+
+.sidebar.close .nav_link:hover {
+  background-color: #eaedf2;
+  transition: background-color 0.1s ease; /* Smooth hover effect */
+}
+
+.sidebar.close:focus {
+  color: #103782;
+  background-color: #eaedf2;
+  border-left-color: rgb(16, 55, 130);
+  border-left-style: outset;
+  transition: all 0.1s ease; /* Smooth focus effect */
+}
+
+/* Highlight the active nav_link */
+.item.checked .nav_link {
+  color: #103782; /* Primary color for active state */
+  background-color: #eaedf2; /* Subtle background for active link */
+  border-left: 3px solid #103782; /* Highlight on the left */
+  transition: border-left 0.1s ease; /* Smooth transition for active state */
+}
+
+.item.checked .navlink_icon {
+  color: #103782; /* Change icon color for active state */
+  transition: color 0.1s ease; /* Smooth transition for icon color */
+}
+
+/* Bottom Content */
+.bottom_content {
+  position: fixed;
+  bottom: 60px;
+  left: 0;
+  width: 210px;
+  cursor: pointer;
+  transition: width 0.5s ease; /* Smooth transition for width */
+}
+
+.bottom_content .bottom {
+  position: absolute;
+  width: 100%;
+  padding: 0;
+}
+
+.bottom .menu_items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bottom .item {
+  margin: 5px 0;
+}
+
+.bottom .nav_link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--grey-color);
+  padding: 4px 15px;
+  transition: background-color 0.1s ease, color 0.1s ease; /* Smooth hover and color transition */
+}
+
+.bottom .nav_link:hover {
+  background-color: #eaedf2;
+  transition: background-color 0.1s ease; /* Smooth hover effect */
+}
+
+.bottom .navlink_icon {
+  margin-top: 5px;
+  color: #103782;
+  font-size: 25px;
+  min-width: 50px;
+  line-height: 35px;
+  display: inline-block;
+  text-align: center;
+  transition: color 0.1s ease; /* Smooth icon color transition */
+}
+
+.bottom .item.checked .nav_link {
+  color: #103782; /* Primary color for active state */
+  background-color: #eaedf2; /* Subtle background for active link */
+  border-left: 3px solid #103782; /* Highlight on the left */
+  transition: border-left 0.1s ease; /* Smooth active state transition */
+}
+
+.sidebar.close .bottom .navlink {
+  display: none;
+}
+
+.sidebar.close .bottom .navlink_icon {
+  text-align: center;
+}
+
+.sidebar.close .bottom_content {
+  width: 80px; /* Matches collapsed sidebar width */
+}
+
+.bottom hr {
+  margin: auto;
+  width: 95%;
+  border: 1px solid #103782;
+  background-color: var(--grey-color-light);
+  transition: margin 0.5s ease; /* Smooth resizing effect */
+}
+
+/* Additional style for collapsed sidebar */
+.sidebar.close .bottom hr {
+  margin: auto;
+  width: 95%; /* Adjust for collapsed state */
+}

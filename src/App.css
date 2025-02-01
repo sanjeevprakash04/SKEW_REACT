@@ -1,0 +1,30 @@
+/* Main Content Area */
+.main-content {
+    margin-left: 220px; /* Full sidebar width */
+    margin-right: 10px;
+    margin-top: 90px;
+    margin-bottom: 10px;
+    background-color: var(--white-color);
+    border-radius: 5px;
+    min-height: calc(100vh - 100px); /* Fill viewport height minus padding */
+    max-width: 100%; /* Limit maximum width for large screens */
+    overflow-y: auto; /* Enable vertical scrolling for overflow */
+    overflow-x: hidden; /* Hide horizontal overflow */
+    display: flex;
+    flex-direction: column;
+    transition: margin-left 0.5s ease;
+}
+
+/* Adjust when sidebar is collapsed */
+.main-content.collapsed {
+    margin-left: 90px; /* Collapsed sidebar width */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0; /* Full-width on smaller screens */
+        max-width: 100%; /* Take full width on small screens */
+    }
+}
+  

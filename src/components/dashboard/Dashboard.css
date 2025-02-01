@@ -1,0 +1,123 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+}
+  
+.dashboard-title-content {
+  padding-top: 15px;
+  display: flex;
+  font-size: 12px;
+  font-weight: bold;
+  color: #103782;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.dashboard-title {
+  padding-top: 10px;
+}
+
+.buttons {
+  display: flex;
+}
+
+.buttons .b1{
+  height: 40px;
+  width: 150px;
+  background-color: #103782;
+  color: white;
+  font-size: 14px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+hr {
+  margin-left: 5px;
+  margin-right: 5px;
+  border-color: #103782;
+}
+
+.dashboard-widgets {
+  display: flex;
+  flex-direction: column;
+  padding: 2px 5px;
+  min-height: calc(100vh - 182px);
+}
+
+.dashboard-widgets .widget-upper{
+  display: flex;
+  max-width: 100%;
+  min-height: calc(50vh - 84px);
+}
+
+.dashboard-widgets .widget-upper .widget{
+  margin: 1px;
+  display: flex;
+  flex-direction: column;
+  width: 50%
+}
+
+.dashboard-widgets .widget-upper .widget span{
+  margin-top: 1px;
+  margin-left: 2px;
+  font-size: 15px;
+}
+
+.dashboard-widgets .widget-upper .widget .chart-view {
+  margin: 1px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  min-height: calc(50vh - 114px);
+}
+
+.dashboard-widgets .widget-upper .widget .meter-view {
+  margin: 1px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  min-height: calc(50vh - 114px);
+}
+
+.dashboard-widgets .widget-lower{
+  display: flex;
+  width: 100%;
+  min-height: calc(50vh - 84px)
+}
+
+.dashboard-widgets .widget-lower .widget{
+  margin: 1px;
+  display: flex;
+  flex-direction: column;
+  width: 50%
+}
+
+.dashboard-widgets .widget-lower .widget span{
+  margin-top: 1px;
+  margin-left: 2px;
+  font-size: 15px;
+}
+
+.dashboard-widgets .widget-lower .widget .log-view {
+  margin: 1px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  padding: 10px;
+  min-height: calc(50vh - 114px);
+}
+
+.dashboard-widgets .widget-lower .widget .table-view {
+  margin: 1px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  min-height: calc(50vh - 114px);
+}
