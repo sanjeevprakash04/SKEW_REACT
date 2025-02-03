@@ -1,7 +1,28 @@
 import './Settings.css';
-import React from 'react';
+import React, {useState} from 'react';
 
-function Settings(){
+function Settings({onInputSubmit, onDropdownSubmit}){
+    const [connDriver, setConnDriver] = useState('');
+    const [ip, setIp] = useState('');
+
+    const handleConnUpperFormSubmit = (event)=>{
+        event.preventDefault();
+        onDropdownSubmit(connDriver);
+    }
+
+    const handleDropdownChange = (event)=>{
+        setConnDriver(event.target.value);
+    }
+
+    const handleConnLowerFormSubmit = (event)=>{
+        event.preventDefault();
+        onInputSubmit(ip);
+    }
+
+    const handleInputChange = (event)=>{
+        setIp(event.target.value);
+    }
+
     return (
         <div className="settings">
             <div className="settings-title-content">
@@ -12,21 +33,25 @@ function Settings(){
                 <div className="widget-upper">
                     <div className="widget">
                         <span>Configure Connection</span>
-                        <div className="connection-view">
+                        <div className="connection-view">  
                             <div className='upper'>
-                                <span>Select the Connection Driver</span>
-                                <select className="dropdown">
-                                    <option value="1">OPC Server</option>
-                                    <option value="2">Siemens S7 1200/1500 TCP/IP Ethernet</option>
-                                    <option value="3">Siemens S7 200 TCP/IP Ethernet</option>
-                                    <option value="4">Siemens S7 300/400 TCP/IP Ethernet</option>
-                                    <option value="5">Modbus TCP</option>
-                                </select>
+                                <form onSubmit={handleConnUpperFormSubmit}>
+                                    <span>Select the Connection Driver</span>
+                                    <select className="dropdown" onChange={handleDropdownChange}>
+                                        <option value="0">OPC Server</option>
+                                        <option value="1">Siemens S7 1200/1500 TCP/IP Ethernet</option>
+                                        <option value="2">Siemens S7 200 TCP/IP Ethernet</option>
+                                        <option value="3">Siemens S7 300/400 TCP/IP Ethernet</option>
+                                        <option value="4">Modbus TCP</option>
+                                    </select>
+                                </form>
                             </div>
                             <div className='lower'>
-                                <span>Specify the Node or Driver specific station</span>
-                                <input placeholder='Enter IP Address'/>
-                            </div>
+                                <form onSubmit={handleConnLowerFormSubmit}>
+                                    <span>Specify the Node or Driver specific station</span>
+                                    <input placeholder='Enter IP Address' value={ip} onChange={handleInputChange} />
+                                </form>
+                            </div>    
                         </div>
                     </div>
                     <div className="widget">

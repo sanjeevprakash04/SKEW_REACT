@@ -12,7 +12,7 @@ function Log(){
             </div>
             <hr></hr>
             <div className='log-view'>
-                <p className="no-logs">No logs available</p>
+                <p className="no-logs">No logs to display</p>
             </div>
         </div>
     )
