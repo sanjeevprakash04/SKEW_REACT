@@ -9,6 +9,7 @@ import Log from './components/log/Log';
 import About from './components/about/About';
 import Settings from './components/settings/Settings';
 import Help from './components/help/Help';
+
 import Launch from './components/launch/Launch';
 
 function App(){
