@@ -9,15 +9,12 @@ import Log from './components/log/Log';
 import About from './components/about/About';
 import Settings from './components/settings/Settings';
 import Help from './components/help/Help';
-
 import Launch from './components/launch/Launch';
 
 function App(){
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
     const [isVerified, setIsVerified] = useState(false); // Reset verification on restart
-    const [driver, setDriver] = useState('');
-    const [address, setAddress] = useState('');
-    const [connection, setConnection] = useState([]);
+    const [connection, setConnection] = useState({ driver:'0', ipAddress:'',});
 
     useEffect(() => {
         // Reset verification when the app starts (Removes stored verification)
@@ -34,20 +31,9 @@ function App(){
         setIsVerified(true);
     };
 
-    //
-    const handleDropdownSubmit = (connDriver)=>{
-        setDriver(connDriver)
-    }
-
-    const handleInputSubmit = (ip)=>{
-        setAddress(ip);
-    }
-
-    const handleConnection = ()=>{
-        const result = [driver, address];
-        setConnection(result);
-        return connection;
-    }
+    const handleConnectionChange = (driver, ipAddress) => {
+        setConnection({ driver, ipAddress });
+    };
 
     return (
         <Router>
@@ -67,16 +53,16 @@ function App(){
                 <main className={`main-content ${isSidebarCollapsed ? "collapsed" : "expanded"}`}>
                     <Routes>
                         <Route path="/" element={<Navigate to="/dashboard" />} />
-                        <Route path="/dashboard" element={<Dashboard onSubmit={handleConnection}/>} />
+                        <Route path="/dashboard" element={<Dashboard connection={connection}/>} />
                         <Route path="/export" element={<Export />} />
                         <Route path="/log" element={<Log />} />
                         <Route path="/about" element={<About />} />
-                        <Route path="/settings" element={<Settings onInputSubmit={handleInputSubmit} onDropdownSubmit={handleDropdownSubmit} />} />
+                        <Route path="/settings" element={<Settings onConnectionChange={handleConnectionChange} />} />
                         <Route path="/help" element={<Help />} />
                     </Routes>
                 </main>
                     </>
-                ) }
+                )}
             </div>
         </Router>
     );

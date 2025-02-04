@@ -59,6 +59,7 @@ function Launch({ onVerify }) {
                         value={licenseKey}
                         onChange={(e) => setLicenseKey(e.target.value)}
                         placeholder="Enter License Key..."
+                        autoComplete="off"
                     />
                     <button className="activate-button" onClick={handleActivate}>Activate</button>
                 </div>

@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import "./Dashboard.css";
 
-function Dashboard({onSubmit}) {
+function Dashboard({connection}) {
     const totalData = Array.from({ length: 25 }, (_, i) => ({
         date: "12-Dec-2024",
         time: `23:${59 - (i % 60)}:27`,
@@ -15,12 +15,17 @@ function Dashboard({onSubmit}) {
     const startIndex = (currentPage - 1) * rowsPerPage;
     const displayedData = totalData.slice(startIndex);
 
+    const handleClick = ()=>{
+        console.log(connection.driver);
+        console.log(connection.ipAddress);
+    }
+
     return (
         <div className="dashboard">
             <div className="dashboard-title-content">
                 <h1 className="dashboard-title">Dashboard</h1>
                 <div className="buttons">
-                    <button className="b1" onClick={onSubmit}>Connect</button>
+                    <button className="b1" onClick={handleClick}>Connect</button>
                     <button className="b1">Disconnect</button>
                 </div>
             </div>
