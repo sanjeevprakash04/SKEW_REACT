@@ -1,23 +1,44 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+@font-face {
+  font-family: 'Poppins';
+  src: url('./fonts/Poppins-Regular.ttf') format('truetype'),
+       url('./fonts/Poppins-Bold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Boxicons';
+  src: url('./icons/boxicons.woff2') format('woff2'),
+       url('./icons/boxicons.woff') format('woff'),
+       url('./icons/boxicons.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
+
 :root {
   --white-color: #fff;
   --blue-color: #4070f4;
   --grey-color: #707070;
   --grey-color-light: #aaa;
 }
+
 body {
+  font-family: 'Poppins', sans-serif;
   background-color: #e7f2fd;
   transition: all 0.5s ease;
 }
+
 body.dark {
   background-color: #333;
 }
+
 body.dark {
   --white-color: #333;
   --blue-color: #fff;
