@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import "./Dashboard.css";
+import axios from "axios";
 
 function Dashboard({connection}) {
     const totalData = Array.from({ length: 25 }, (_, i) => ({
@@ -11,14 +12,28 @@ function Dashboard({connection}) {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState();
+    const [message, setMessage] = useState("");
 
     const startIndex = (currentPage - 1) * rowsPerPage;
     const displayedData = totalData.slice(startIndex);
 
-    const handleClick = ()=>{
-        console.log(connection.driver);
-        console.log(connection.ipAddress);
-    }
+    const handleClick = async () => {
+        console.log("Driver:", connection.driver);
+        console.log("IP Address:", connection.ipAddress);
+
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/plc-connect", {
+                ip: connection.ipAddress,  // Send IP Address
+                driver: connection.driver, // Send selected driver
+            });
+
+            console.log("Connection Response:", response.data);
+            setMessage(response.data.response || "PLC Connected Successfully!");
+        } catch (error) {
+            console.error("Connection Error:", error);
+            setMessage("Error connecting to PLC: " + (error.response?.data?.error || error.message));
+        }
+    };
 
     return (
         <div className="dashboard">
@@ -49,7 +64,7 @@ function Dashboard({connection}) {
                     <div className="widget">
                         <span>Log Details</span>
                         <div className="log-view">
-                            <p>No logs to display</p>
+                            <p>{message}</p>
                         </div>
                     </div>
                     <div className="widget">

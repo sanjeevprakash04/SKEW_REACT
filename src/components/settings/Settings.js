@@ -6,7 +6,7 @@ function Settings({ onConnectionChange }) {
     const [driver, setDriver] = useState('0');
     const [ipAddress, setIpAddress] = useState('');
     const [file, setFile] = useState(null);
-    const [message, setMessage] = useState("");
+    const [message, setMessage] = useState("No logs to display");
     const fileInputRef = useRef(null);
 
     const handleDriverChange = (event) => {
@@ -141,7 +141,7 @@ function Settings({ onConnectionChange }) {
                     <div className='widget'>
                         <span>Log Details</span>
                         <div className='logdata-view'>
-                            <p>No logs to display</p>
+                            <p>{message}</p>
                         </div>
                     </div>
                 </div>
