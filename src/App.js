@@ -1,6 +1,6 @@
 import './App.css';
 import React,{ useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from "./components/navbar/Navbar";
 import Sidebar from "./components/sidebar/Sidebar";
 import Dashboard from './components/dashboard/Dashboard';
@@ -36,35 +36,33 @@ function App(){
     };
 
     return (
-        <Router>
-            <div className="app">
-                {/* If not verified, show Launch component only */}
-                 {!isVerified ? (
-                    <Routes>
-                        <Route path="*" element={<Launch onVerify={handleVerification} />} />
-                    </Routes>
-                ) : (
-                    <>
-                <Navbar toggleSidebar={toggleSidebar} />
-                <Sidebar 
-                    isCollapsed={isSidebarCollapsed} 
-                    toggleSidebar={toggleSidebar}
-                />
-                <main className={`main-content ${isSidebarCollapsed ? "collapsed" : "expanded"}`}>
-                    <Routes>
-                        <Route path="/" element={<Navigate to="/dashboard" />} />
-                        <Route path="/dashboard" element={<Dashboard connection={connection}/>} />
-                        <Route path="/export" element={<Export />} />
-                        <Route path="/log" element={<Log />} />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/settings" element={<Settings onConnectionChange={handleConnectionChange} />} />
-                        <Route path="/help" element={<Help />} />
-                    </Routes>
-                </main>
-                    </>
-                )}
-            </div>
-        </Router>
+        <div className="app">
+            {/* If not verified, show Launch component only */}
+                {!isVerified ? (
+                <Routes>
+                    <Route path="*" element={<Launch onVerify={handleVerification} />} />
+                </Routes>
+            ) : (
+                <>
+            <Navbar toggleSidebar={toggleSidebar} />
+            <Sidebar 
+                isCollapsed={isSidebarCollapsed} 
+                toggleSidebar={toggleSidebar}
+            />
+            <main className={`main-content ${isSidebarCollapsed ? "collapsed" : "expanded"}`}>
+                <Routes>
+                    <Route path="/" element={<Navigate to="/dashboard" />} />
+                    <Route path="/dashboard" element={<Dashboard connection={connection}/>} />
+                    <Route path="/export" element={<Export />} />
+                    <Route path="/log" element={<Log />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/settings" element={<Settings onConnectionChange={handleConnectionChange} />} />
+                    <Route path="/help" element={<Help />} />
+                </Routes>
+            </main>
+                </>
+            )}
+        </div>
     );
 }
 
