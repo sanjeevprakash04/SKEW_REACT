@@ -46,7 +46,7 @@ function MainTable({data}) {
           Filter
         </Button>
       </div>
-      <TableContainer sx={{ height: 'calc(90vh - 185px)' }}>
+      <TableContainer sx={{ height: 'calc(86vh - 185px)' }}>
           <Table stickyHeader aria-label="sticky table">
               <TableHead>
                   <TableRow>
@@ -82,7 +82,7 @@ function MainTable({data}) {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           sx={{
-            height: 'calc(10vh - 40px)',
+            height: 'calc(10vh - 20px)',
             borderTop: '1px solid #ddd', // Adds a subtle top border only above pagination
             backgroundColor: '#ffffff'
         }}

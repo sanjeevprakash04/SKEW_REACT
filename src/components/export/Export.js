@@ -1,8 +1,9 @@
 import './Export.css';
 import React, {useState,useEffect} from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import MainTable from '../table/TableComp';
 import LineChartComponent from '../linechart/LineChartComp';
+import jsonData from './Skew_MFM_data.json';
 
 function Export(){
 
@@ -10,13 +11,8 @@ function Export(){
     const [activeComponent, setActiveComponent] = useState(null); // Track which component to render
 
     useEffect(() => {
-    axios.get("http://127.0.0.1:8000/get-json-data")
-        .then((response) => {
-            setData(response.data.data);
-        })
-        .catch((error) => {
-            console.error("Error fetching data:", error);
-        });
+        const jData = jsonData.data;
+        setData(jData);
     }, []);
 
     return (
