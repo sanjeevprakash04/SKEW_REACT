@@ -1,8 +1,8 @@
 {
+  "homepage": "https://github.com/sanjeevprakash04/SKEW_REACT",
   "name": "skew-app-3.0.1",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/sanjeevprakash04/SKEW_REACT",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
