@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/SKEW_REACT/static/css/main.ba022c0e.css",
-    "main.js": "/SKEW_REACT/static/js/main.38b5ee4f.js",
+    "main.js": "/SKEW_REACT/static/js/main.fad7f14c.js",
     "static/media/skew-logo-horizontal.png": "/SKEW_REACT/static/media/skew-logo-horizontal.363d15d65ea7556bd416.png",
     "static/media/logo.png": "/SKEW_REACT/static/media/logo.4283ffe1d9b9da168342.png",
     "static/media/boxicons.woff": "/SKEW_REACT/static/media/boxicons.d12afc36557395143e4b.woff",
@@ -12,10 +12,10 @@
     "static/media/profile.jpg": "/SKEW_REACT/static/media/profile.979dda0cdfd716605b21.jpg",
     "index.html": "/SKEW_REACT/index.html",
     "main.ba022c0e.css.map": "/SKEW_REACT/static/css/main.ba022c0e.css.map",
-    "main.38b5ee4f.js.map": "/SKEW_REACT/static/js/main.38b5ee4f.js.map"
+    "main.fad7f14c.js.map": "/SKEW_REACT/static/js/main.fad7f14c.js.map"
   },
   "entrypoints": [
     "static/css/main.ba022c0e.css",
-    "static/js/main.38b5ee4f.js"
+    "static/js/main.fad7f14c.js"
   ]
 }
