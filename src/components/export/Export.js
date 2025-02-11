@@ -10,7 +10,7 @@ function Export(){
     const [activeComponent, setActiveComponent] = useState(null); // Track which component to render
 
     useEffect(() => {
-    axios.get("http://127.0.0.1:8000//get-json-data")
+    axios.get("http://127.0.0.1:8000/get-json-data")
         .then((response) => {
             setData(response.data.data);
         })
