@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import "./Dashboard.css";
 import axios from "axios";
+import BarChartComp from '../barchart/BarChartComp';
 
 function Dashboard({connection}) {
     const totalData = Array.from({ length: 25 }, (_, i) => ({
@@ -10,8 +11,8 @@ function Dashboard({connection}) {
         idc: 0,
     }));
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [rowsPerPage, setRowsPerPage] = useState();
+    const currentPage = useState(1);
+    const rowsPerPage = useState();
     const [message, setMessage] = useState("");
 
     const startIndex = (currentPage - 1) * rowsPerPage;
@@ -50,7 +51,7 @@ function Dashboard({connection}) {
                     <div className="widget">
                         <span>Bar Chart</span>
                         <div className="chart-view">
-
+                            <BarChartComp />
                         </div>
                     </div>
                     <div className="widget">
