@@ -5,13 +5,11 @@ import axios from "axios";
 
 function Launch({ onVerify }) {
     const [licenseKey, setLicenseKey] = useState("");
-    const BASE_URL = "https://skew-server.onrender.com";
-    
 
     const handleActivate = async () => {
         try {
             console.log(licenseKey.trim());
-            const response = await axios.post(`${BASE_URL}/get-data`, {
+            const response = await axios.post("http://127.0.0.1:8000/get-data", {
                 
                 styEnckey: licenseKey
             });

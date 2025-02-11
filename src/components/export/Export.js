@@ -8,11 +8,9 @@ function Export(){
 
     const [data, setData] = useState([]);
     const [activeComponent, setActiveComponent] = useState(null); // Track which component to render
-    
-    const BASE_URL = "https://skew-server.onrender.com";
 
     useEffect(() => {
-    axios.get(`${BASE_URL}/get-json-data`)
+    axios.get("http://127.0.0.1:8000//get-json-data")
         .then((response) => {
             setData(response.data.data);
         })
