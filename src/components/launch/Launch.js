@@ -24,7 +24,7 @@ function Launch({ onVerify }) {
         try {
             console.log("NONE", licenseKey.trim() || "No key provided");
 
-            const response = await axios.post(`${BASE_URL}/open-window`, {
+            const response = await axios.post("http://127.0.0.1:8000/open-window", {
                 
                 styEnckey: licenseKey.trim()
             });
