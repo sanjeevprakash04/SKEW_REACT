@@ -2,7 +2,7 @@ import './Export.css';
 import React, {useState,useEffect} from 'react';
 import axios from 'axios';
 import MainTable from '../table/TableComp';
-import LineChartComponent from '../../linechart/LineChartComp';
+import LineChartComponent from '../linechart/LineChartComp';
 
 function Export(){
 
