@@ -1,7 +1,8 @@
-import React, { useContext, useState } from "react";
+import /*React,*/ { useContext, useState } from "react";
 import { Paper, AppBar, Toolbar, IconButton, Box, Tooltip, Menu, MenuItem, Avatar, Divider, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import { useNavigate } from "react-router-dom";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import { AccountCircle, Logout } from "@mui/icons-material";
 import Logo from "./skew-logo-horizontal.png";
@@ -11,6 +12,7 @@ import { AppContext } from "../../context/AppContext";
 
 function Navbar({ toggleSidebar, clearMessages, clearLogs }) {
     const { isConnected } = useContext(AppContext);
+    const navigate = useNavigate();
     const { user, logoutUser } = useContext(AuthContext);
     const { darkMode, toggleTheme } = useContext(ThemeContext);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -18,10 +20,8 @@ function Navbar({ toggleSidebar, clearMessages, clearLogs }) {
     const handleLogout = () => {
         clearLogs();
         clearMessages();
-        window.location.href = "/home";
-        setTimeout(() => {
-            logoutUser();
-        }, 2000);
+        logoutUser();
+        navigate("/home");
     };
 
     // Open user menu

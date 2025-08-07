@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { TextField, Button, Box, Typography, Alert, CircularProgress } from "@mui/material";
+import { AuthContext } from "../../context/AuthContext";
 
 function ResetPassword() {
     const [searchParams] = useSearchParams();
@@ -11,7 +12,8 @@ function ResetPassword() {
     const [message, setMessage] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+    const { logoutUser } = useContext(AuthContext);
+    // const navigate = useNavigate();
 
     useEffect(() => {
         const urlToken = searchParams.get("token") || new URLSearchParams(window.location.search).get("token");
@@ -55,9 +57,9 @@ function ResetPassword() {
 
             setMessage(response.data.message);
             setTimeout(() => {
-                navigate("/home");
-                window.location.reload();
-            }, 3000); // Redirect to login after success
+                logoutUser();
+                window.location.href = "/home";
+            }, 2000); // Redirect to login after success
         } catch (error) {
             setError(error.response?.data?.detail || "Failed to reset password.");
         } finally {

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import /*React,*/ { useContext, useState } from "react";
 import { Typography, List, ListItem, ListItemText, AppBar, Toolbar, IconButton, Box, Tooltip, Modal, Backdrop, Button } from "@mui/material";
 import HelpIcon from "@mui/icons-material/Help";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
@@ -7,7 +7,7 @@ import Logo from './logo.png';
 import { ThemeContext } from "../../context/ThemeContext";
 import LoginPage from "../loginpage/LoginPage";
 
-function StartPage({ onLogin }){
+function StartPage(){
     const { darkMode, toggleTheme } = useContext(ThemeContext);
     const [openLogin, setOpenLogin] = useState(false);
 
@@ -174,7 +174,6 @@ function StartPage({ onLogin }){
             }}
         >
             <LoginPage 
-                onLogin={onLogin}
                 onClose={() => setOpenLogin(false)}
                 title="Login" 
             />

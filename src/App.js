@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { AuthContext } from './context/AuthContext';
 import { AppProvider } from './context/AppContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import Launch from "./components/launch/Launch";
+// import Launch from "./components/launch/Launch";
 import Navbar from './components/navbar/Navbar';
 import Sidebar from './components/sidebar/Sidebar';
 import Dashboard from './components/dashboard/Dashboard';
@@ -22,9 +22,9 @@ import DataMonitoring from './components/dashboard/DataMonitoring';
 
 function App(){
     const { user, requiresPasswordReset, resetToken } = useContext(AuthContext);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    // const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
-    const [isVerified, setIsVerified] = useState(false); // Reset verification on restart
+    // const [isVerified, setIsVerified] = useState(false); // Reset verification on restart
     const [connection, setConnection] = useState({ driver:'0', ipAddress:''});
     const [message, setMessage] = useState([]);
     const [logs, setLogs] = useState(() => {
@@ -139,26 +139,26 @@ function App(){
         localStorage.removeItem("logMessages"); // Clear storage
     };
 
-    useEffect(() => {
-        // Reset verification when the app starts (Removes stored verification)
-        localStorage.removeItem("licenseVerified");
-    }, []);
+    // useEffect(() => {
+    //     // Reset verification when the app starts (Removes stored verification)
+    //     localStorage.removeItem("licenseVerified");
+    // }, []);
 
 
 
-    const handleLogin = () => {
-        setIsLoggedIn(true); // Set login status
-    };
+    // const handleLogin = () => {
+    //     setIsLoggedIn(true); // Set login status
+    // };
 
     const toggleSidebar = () => {
         setIsSidebarCollapsed(!isSidebarCollapsed);
     };
 
     // Callback function to set verification status
-    const handleVerification = () => {
-        // localStorage.setItem("licenseVerified", "true"); // Store verification
-        setIsVerified(true);
-    };
+    // const handleVerification = () => {
+    //     // localStorage.setItem("licenseVerified", "true"); // Store verification
+    //     setIsVerified(true);
+    // };
 
     const handleConnectionChange = (driver, ipAddress) => {
         setConnection({ driver, ipAddress });
@@ -175,18 +175,18 @@ function App(){
                         <Route path="*" element={<Navigate to={`/reset-password?token=${resetToken}`} />} />
                         <Route path="/reset-password" element={<ResetPassword />} />
                     </Routes>
-                ) : !isLoggedIn ? (
+                ) : !user || user === null? (
                     <Routes>
                         <Route path="*" element={<Navigate to="/home" />} />
-                        <Route path="/home" element={<StartPage onLogin={handleLogin}/>} />
+                        <Route path="/home" element={<StartPage />} />
                     </Routes>
                 ) : user?.role === 1 ? (
-                    !isVerified ? (
-                        <Routes>
-                            <Route path="*" element={<Navigate to="/launch" />} />
-                            <Route path="/launch" element={<Launch onVerify={handleVerification} />} />
-                        </Routes>
-                    ) : (
+                    // !isVerified ? (
+                    //     <Routes>
+                    //         <Route path="*" element={<Navigate to="/launch" />} />
+                    //         <Route path="/launch" element={<Launch onVerify={handleVerification} />} />
+                    //     </Routes>
+                    // ) : (
                     <>
                         <Navbar toggleSidebar={toggleSidebar} clearMessages={clearMessages} clearLogs={clearLogs}/>
                         <Sidebar 
@@ -231,13 +231,14 @@ function App(){
                             </Routes>
                         </Box>
                     </>
-                    )
-                ) : !isVerified ? ( /* After login, show Launch page for license verification */
-                    <Routes>
-                        <Route path="*" element={<Navigate to="/launch" />} />
-                        <Route path="/launch" element={<Launch onVerify={handleVerification} />} />
-                    </Routes>
-                ) : (
+                )
+                // ) : !isVerified ? ( /* After login, show Launch page for license verification */
+                //     <Routes>
+                //         <Route path="*" element={<Navigate to="/launch" />} />
+                //         <Route path="/launch" element={<Launch onVerify={handleVerification} />} />
+                //     </Routes>
+                // ) : 
+                : (
                         <>
                         <Navbar toggleSidebar={toggleSidebar} clearMessages={clearMessages} clearLogs={clearLogs}/>
                         <Sidebar 

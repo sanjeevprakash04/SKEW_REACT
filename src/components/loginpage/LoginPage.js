@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { Box, IconButton, Typography, TextField, Button, Divider } from "@mui/material";
@@ -6,10 +6,10 @@ import { Google, GitHub, Facebook, Close } from "@mui/icons-material";
 import Logo from './skew-logo-horizontal.png';
 
 // SIGN-UP FORM COMPONENT (inside Modal)
-const LoginPage = ({ onLogin, onClose }) => {
+const LoginPage = ({ onClose }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { loginUser, requiresPasswordReset, resetToken } = useContext(AuthContext);
+    const { user, loginUser, requiresPasswordReset, resetToken } = useContext(AuthContext);
     const navigate = useNavigate();
   
     const handleLogin = async (e) => {
@@ -21,15 +21,18 @@ const LoginPage = ({ onLogin, onClose }) => {
       }
       try {
         await loginUser(email, password);
-        if (requiresPasswordReset && resetToken) {
-          navigate(`/reset-password?token=${resetToken}`);  // Force reset password
-        } else {
-          onLogin();
-        }
       } catch (err) {
         alert(err.message);
       }
     };
+
+    useEffect(() => {
+      if (user) {
+        if (requiresPasswordReset && resetToken) {
+          navigate(`/reset-password?token=${resetToken}`);
+        } 
+      }
+    }, [user, requiresPasswordReset, resetToken, navigate, onClose]);
 
     const handleClose = ()=> {
         onClose();
