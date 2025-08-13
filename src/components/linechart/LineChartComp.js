@@ -34,6 +34,20 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
   const [options, setOptions] = useState({});
 
   useEffect(() => {
+    const savedCategory = localStorage.getItem("selectedCategory");
+    const savedNames = localStorage.getItem("selectedNames");
+    if (savedCategory) {
+      setSelectedCategory(savedCategory);
+      setTempSelectedCategory(savedCategory);
+    }
+    if (savedNames) {
+      const parsedNames = JSON.parse(savedNames);
+      setSelectedNames(parsedNames);
+      setTempSelectedNames(parsedNames);
+    }
+  }, []);
+
+  useEffect(() => {
     setActiveComponent('graph'); // Set default active component to 'table'
     fetchGraphData(hours, fromTime, toTime).then(setData); // Automatically fetch data when Export component is mounted
     onParamsChange({hours, fromTime, toTime});
@@ -56,10 +70,20 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
     const uniqueNames = [...new Set(formattedData.map((d) => d.Name))];
     const initialNameSelection = uniqueNames.reduce((acc, name) => ({ ...acc, [name]: true }), {});
 
-    setSelectedNames(initialNameSelection);
-    setTempSelectedNames(initialNameSelection);
-    setTempSelectedCategory('');
-    setFilteredData(formattedData); // Initially, show all data
+    // Use saved filter if exists, else default to all selected
+    const savedNames = localStorage.getItem("selectedNames");
+    const savedCategory = localStorage.getItem("selectedCategory");
+    setSelectedNames(savedNames ? JSON.parse(savedNames) : initialNameSelection);
+    setTempSelectedNames(savedNames ? JSON.parse(savedNames) : initialNameSelection);
+    setSelectedCategory(savedCategory || '');
+    setTempSelectedCategory(savedCategory || '');
+
+    setFilteredData(
+      formattedData.filter(
+        (d) => (!savedCategory || d.Category === savedCategory) &&
+          (savedNames ? JSON.parse(savedNames)[d.Name] : true)
+      )
+    );
   }, [data]);
 
   // Function to apply filters when "Apply" button is clicked
@@ -67,6 +91,10 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
     const newSelectedNames = { ...tempSelectedNames }; // Make sure state is properly copied
     setSelectedNames(newSelectedNames); // Update selected names
     setSelectedCategory(tempSelectedCategory); // Update category
+
+    // Save to localStorage for persistence
+    localStorage.setItem("selectedNames", JSON.stringify(tempSelectedNames));
+    localStorage.setItem("selectedCategory", tempSelectedCategory);
 
     //  Filter data **immediately** after setting state
     const updatedData = originalData.filter(
@@ -107,6 +135,17 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
 
   // Update the chart when `filteredData` changes
   useEffect(() => {
+    // If no series are selected → show empty chart
+    if (Object.values(selectedNames).every(v => v === false)) {
+      setOptions({
+        backgroundColor: isDarkMode ? "#1e1e1e" : "#e5ecf6",
+        xAxis: { type: "time" },
+        yAxis: { type: "value" },
+        series: [],
+      });
+      return;
+    }
+
     if (!filteredData.length) return;
 
     // Get min and max Y values
@@ -124,45 +163,92 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
           left: '5%',
           right: '7%',
         },
-        tooltip: { 
-            trigger: "axis",
-            axisPointer: { 
-              type: "cross",
-              label: {
-                show: false, // Disable the label that moves with the pointer
-              } 
-            },
-            formatter: (params) => {
-                if (!params || params.length === 0) return "";
-                const date = new Date(params[0].value[0] * 1000);
-                const seenValues = new Set();
-                return `
-                    <div style="background: #fff; padding: 10px; border: 1px solid #ccc; width: 250px;">
-                        <b>${date.toLocaleString("en-GB", { 
-                          year: 'numeric', month: '2-digit', day: '2-digit',
-                          hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
-                        }).replace(",", "")}</b><br />
-                        ${params.map(entry => {
-                            const value = entry.value[1];
-                            if (seenValues.has(value)) return "";
-                            seenValues.add(value);
-                            return `<span style="color:${entry.color};">${entry.seriesName}: ${value !== undefined ? value : 'null'}</span><br/>`;
-                        }).join("")}
-                    </div>
-                `;
-            },
+        tooltip: {
+          trigger: "axis",
+          confine: true,
+          axisPointer: { type: "cross", label: { show: false } },
+
+          position: function (point, params, dom, rect, size) {
+            const viewWidth = size.viewSize[0];
+            const viewHeight = size.viewSize[1];
+            const boxWidth = size.contentSize[0];
+            const boxHeight = size.contentSize[1];
+
+            let x = point[0] + 15;
+            const offset = 10;
+            let y;
+
+            if (point[1] < boxHeight / 2) {
+              y = point[1] + offset; // near top → show below
+            } else if (point[1] > viewHeight - boxHeight / 2) {
+              y = point[1] - boxHeight - offset; // near bottom → show above
+            } else {
+              y = point[1] - boxHeight / 2; // center
+            }
+
+            if (x + boxWidth > viewWidth) x = point[0] - boxWidth - 15;
+            if (x < 0) x = 0;
+
+            if (y < 0) y = 0;
+            if (y + boxHeight > viewHeight) y = viewHeight - boxHeight;
+
+            return [x, y];
+          },
+
+          extraCssText: `
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 8px;
+            max-width: none;
+          `,
+
+          formatter: (params) => {
+            const date = new Date(params[0].value[0] * 1000);
+            const seenValues = new Set();
+
+            let content = `<div style="font-weight:bold;padding: 0.5rem;">
+              ${date.toLocaleString("en-GB", {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                hour12: false
+              }).replace(",", "")}
+            </div>`;
+
+            let dataItems = params.map(entry => {
+              const value = entry.value[1];
+              if (seenValues.has(value)) return "";
+              seenValues.add(value);
+              return `<div style="color:${entry.color}; min-width: 120px;">
+                ${entry.seriesName}: ${value ?? 'null'}
+              </div>`;
+            }).filter(Boolean);
+
+            if (dataItems.length > 10) {
+              const mid = Math.ceil(dataItems.length / 2);
+              content += `
+                <div style="display:flex;gap:20px;padding: 0.5rem;">
+                  <div>${dataItems.slice(0, mid).join("")}</div>
+                  <div>${dataItems.slice(mid).join("")}</div>
+                </div>
+              `;
+            } else {
+              content += dataItems.join("");
+            }
+
+            return content;
+          }
         },
         legend: {
-          show: true,
-          bottom: 0,
-          left: "center",
-          orient: "horizontal",
-          selectedMode: false,
-          textStyle: {
-              fontSize: 12,
-              fontWeight: "bold", // Dynamically set legend text color based on series color
-              color: isDarkMode ? "#eee" : "#333",
-          },
+          show: false,
+          // bottom: 0,
+          // left: "center",
+          // orient: "horizontal",
+          // selectedMode: false,
+          // textStyle: {
+          //     fontSize: 12,
+          //     fontWeight: "bold", // Dynamically set legend text color based on series color
+          //     color: isDarkMode ? "#eee" : "#333",
+          // },
         },
         xAxis: {
             type: "time",
@@ -254,7 +340,7 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
               return {
                   name,
                   type: "line",
-                  data: seriesData.length ? seriesData : null,
+                  data: seriesData.length ? seriesData : [],
                   smooth: true,
                   showSymbol: true,  // Enables points on the line
                   symbol: "circle",  // Shape of the points (options: 'circle', 'rect', 'triangle', etc.)
@@ -273,6 +359,11 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
     setOptions({ ...newOptions });  // Ensure options update
   }, [filteredData, selectedNames, selectedCategory, isDarkMode]);  // Graph updates when these change
 
+   // Filter names based on category for Select All
+  const visibleNames = Object.keys(tempSelectedNames).filter(name =>
+    tempSelectedCategory === '' ||
+    originalData.find(d => d.Name === name)?.Category === tempSelectedCategory
+  );
 
   return (
     <Card sx={{ boxShadow: "none" }}>
@@ -284,6 +375,7 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
         </Box>
         <ReactECharts
             option={options} 
+            notMerge={true} // Ensures it clears old series
             key={`${JSON.stringify(options)}`}
             style={{ height: "calc(90vh - 120px)", width: "100%", paddingBottom: "15px" }} 
             theme={isDarkMode ? "dark" : "light"}
@@ -380,8 +472,27 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
 
                 {/* Name Checkboxes */}
                 <Typography variant="subtitle1">Select Lines:</Typography>
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={Object.values(tempSelectedNames).every(Boolean)} // true if all selected
+                      indeterminate={
+                        Object.values(tempSelectedNames).some(Boolean) && 
+                        !Object.values(tempSelectedNames).every(Boolean) // partially selected
+                      }
+                      onChange={(e) => {
+                        const newState = Object.keys(tempSelectedNames)
+                          .reduce((acc, name) => ({ ...acc, [name]: e.target.checked }), {});
+                        setTempSelectedNames(newState);
+                      }}
+                    />
+                  }
+                  label={<Typography style={{ fontWeight: "bold" }}>Select All</Typography>}
+                />
+
                 <FormGroup style={{ marginLeft: "15px" }}>
-                  {Object.keys(tempSelectedNames).map((name, index) => (
+                  {visibleNames.map((name) => (
                     <FormControlLabel
                       key={name}
                       control={
