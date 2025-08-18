@@ -134,7 +134,7 @@ function Navbar({ toggleSidebar, clearMessages, clearLogs }) {
                             },
                         }}
                     >
-                        <IconButton sx={{ color: "inherit" }}>
+                        <IconButton sx={{ color: "inherit" }} onClick={() => navigate("/notification")}>
                             <NotificationsIcon sx={{ fontSize: '26px' }}/>
                         </IconButton>
                     </Tooltip>

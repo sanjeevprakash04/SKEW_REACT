@@ -19,6 +19,7 @@ import SystemLogs from './components/admin/SystemLogs';
 import ResetPassword from './components/auth/ResetPassword';
 import EnergyMonitoring from './components/dashboard/EnergyMonitoring';
 import DataMonitoring from './components/dashboard/DataMonitoring';
+import NotificationPage from './components/notificationPage/NotificationPage';
 
 function App(){
     const { user, requiresPasswordReset, resetToken } = useContext(AuthContext);
@@ -228,6 +229,7 @@ function App(){
                                     <Route path="/admin/users" element={<UserManagement role={user?.role}/>} />
                                     <Route path="/admin/logs" element={<SystemLogs />} />
                                 </Route>
+                                <Route path="/notification" element={<NotificationPage />}/>
                             </Routes>
                         </Box>
                     </>

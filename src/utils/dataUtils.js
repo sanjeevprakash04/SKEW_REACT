@@ -101,3 +101,40 @@ export const exportData = async (hours, fromTime, toTime) => {
 //     }
 // };
 
+// Fetch all presets
+export const fetchPresets = async () => {
+    try {
+        const response = await axios.get("http://127.0.0.1:8000/line-visibility-presets", {
+            headers: { "Content-Type": "application/json" },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching presets:", error.response?.data || error.message);
+        return [];
+    }
+};
+
+// Save a new preset
+export const savePreset = async (preset) => {
+    try {
+        const response = await axios.post("http://127.0.0.1:8000/line-visibility-presets", preset, {
+            headers: { "Content-Type": "application/json" },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error saving preset:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// Delete a preset by ID
+export const deletePreset = async (id) => {
+    try {
+        await axios.delete(`http://127.0.0.1:8000/line-visibility-presets/${id}`, {
+            headers: { "Content-Type": "application/json" },
+        });
+    } catch (error) {
+        console.error("Error deleting preset:", error.response?.data || error.message);
+        throw error;
+    }
+};

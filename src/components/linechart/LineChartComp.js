@@ -3,7 +3,7 @@ import ReactECharts from "echarts-for-react";
 import { Box, Card, CardContent, Typography, Button, Drawer, FormControl, InputLabel } from '@mui/material';
 import { Select, MenuItem, FormGroup, FormControlLabel, Checkbox, IconButton, TextField, Tabs, Tab } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { fetchGraphData } from "../../utils/dataUtils";
+import { fetchGraphData, fetchPresets, savePreset, deletePreset } from "../../utils/dataUtils";
 import { useTheme } from '@mui/material/styles';
 
 // Define a color palette for different Names
@@ -33,9 +33,21 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
   const [selectedToTime, setSelectedToTime] = useState(toTime);
   const [options, setOptions] = useState({});
 
+  // Preset States
+  const [presets, setPresets] = useState([]);
+  const [selectedPresetId, setSelectedPresetId] = useState("");
+  const [newPresetName, setNewPresetName] = useState("");
+
+  // Fetch presets from backend
   useEffect(() => {
-    const savedCategory = localStorage.getItem("selectedCategory");
-    const savedNames = localStorage.getItem("selectedNames");
+    fetchPresets().then(setPresets);
+  }, []);
+
+  // Load session filter state on mount
+  useEffect(() => {
+    const savedCategory = sessionStorage.getItem("selectedCategory");
+    const savedNames = sessionStorage.getItem("selectedNames");
+
     if (savedCategory) {
       setSelectedCategory(savedCategory);
       setTempSelectedCategory(savedCategory);
@@ -70,40 +82,33 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
     const uniqueNames = [...new Set(formattedData.map((d) => d.Name))];
     const initialNameSelection = uniqueNames.reduce((acc, name) => ({ ...acc, [name]: true }), {});
 
-    // Use saved filter if exists, else default to all selected
-    const savedNames = localStorage.getItem("selectedNames");
-    const savedCategory = localStorage.getItem("selectedCategory");
-    setSelectedNames(savedNames ? JSON.parse(savedNames) : initialNameSelection);
-    setTempSelectedNames(savedNames ? JSON.parse(savedNames) : initialNameSelection);
-    setSelectedCategory(savedCategory || '');
-    setTempSelectedCategory(savedCategory || '');
+    // If no saved session, initialize defaults
+    if (Object.keys(tempSelectedNames).length === 0) {
+      setSelectedNames(initialNameSelection);
+      setTempSelectedNames(initialNameSelection);
+    }
+    if (!tempSelectedCategory) {
+      setTempSelectedCategory("");
+    }
 
-    setFilteredData(
-      formattedData.filter(
-        (d) => (!savedCategory || d.Category === savedCategory) &&
-          (savedNames ? JSON.parse(savedNames)[d.Name] : true)
-      )
-    );
-  }, [data]);
+    setFilteredData(formattedData);
+  }, [data, tempSelectedCategory, tempSelectedNames]);
 
   // Function to apply filters when "Apply" button is clicked
-  const applyFilters = () => {
-    const newSelectedNames = { ...tempSelectedNames }; // Make sure state is properly copied
-    setSelectedNames(newSelectedNames); // Update selected names
-    setSelectedCategory(tempSelectedCategory); // Update category
+  const applyFilters = (names = tempSelectedNames, category = tempSelectedCategory) => {
+    const newSelectedNames = { ...names };
+    setSelectedNames(newSelectedNames);
+    setSelectedCategory(category);
 
-    // Save to localStorage for persistence
-    localStorage.setItem("selectedNames", JSON.stringify(tempSelectedNames));
-    localStorage.setItem("selectedCategory", tempSelectedCategory);
+    sessionStorage.setItem("selectedCategory", category);
+    sessionStorage.setItem("selectedNames", JSON.stringify(newSelectedNames));
 
-    //  Filter data **immediately** after setting state
     const updatedData = originalData.filter(
-      (d) => (tempSelectedCategory === '' || d.Category === tempSelectedCategory) && newSelectedNames[d.Name]
+      (d) => (category === '' || d.Category === category) && newSelectedNames[d.Name]
     );
 
-    setFilteredData(updatedData); //  Update filtered data immediately
-
-    setOpenSidebar(false); // Close sidebar after applying filters
+    setFilteredData(updatedData);
+    setOpenSidebar(false);
   };
 
   const handleSetHours = (e) => {
@@ -131,6 +136,57 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
     fetchGraphData(selectedHours, selectedFromTime, selectedToTime).then(setData); // Call fetchData from Export.js with user inputs
     setActiveComponent('graph');
     setOpenSidebar(false);
+  };
+
+  // Apply preset to current selection
+  const handleApplyPreset = () => {
+    const preset = presets.find(p => p.id === Number(selectedPresetId));
+    if (preset) {
+      const clonedNames = JSON.parse(JSON.stringify(preset.names));
+      const category = preset.category || "";
+
+      // Update UI states
+      setTempSelectedNames(clonedNames);
+      setTempSelectedCategory(category);
+
+      // Apply filters IMMEDIATELY with preset values (no async delay issue)
+      applyFilters(clonedNames, category);
+
+      // Close drawer
+      setOpenSidebar(false);
+    }
+  };
+
+  // Save current selection as a preset
+  const handleSavePreset = async () => {
+    if (!newPresetName.trim()) {
+      alert("Please enter a preset name");
+      return;
+    }
+    try {
+      const data = await savePreset({
+        name: newPresetName,
+        category: tempSelectedCategory,
+        names: JSON.parse(JSON.stringify(tempSelectedNames)) // deep clone
+      });
+      setPresets(prev => [...prev, data]);
+      setNewPresetName("");
+      alert("Preset saved!");
+    } catch (error) {
+      console.error("Error saving preset:", error);
+      alert("Failed to save preset");
+    }
+  };
+
+  // Delete preset
+  const handleDeletePreset = async (id) => {
+    try {
+      await deletePreset(id);
+      setPresets(prev => prev.filter(p => p.id !== id));
+    } catch (error) {
+      console.error("Error deleting preset:", error);
+      alert("Failed to delete preset");
+    }
   };
 
   // Update the chart when `filteredData` changes
@@ -456,7 +512,41 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
 
             {activeTab === 1 && (
             <Box style={{ overflow: 'auto', }}>
-              <Box className="table-header" style={{ display: 'flex', flexDirection: 'column', marginTop: '20px'}}>
+              <Box className="table-header" style={{ display: 'flex', flexDirection: 'column', marginTop: '10px'}}>
+                {/* Preset Selection */}
+                <Typography variant="subtitle1" style={{ marginBottom: 2, marginLeft: 2 }}>Presets</Typography>
+                <Box display="flex" gap={1} mb={2}>
+                  <Select
+                    value={selectedPresetId}
+                    onChange={(e) => setSelectedPresetId(e.target.value)}
+                    fullWidth
+                  >
+                    <MenuItem value="">Select Preset</MenuItem>
+                    {presets.map(preset => (
+                      <MenuItem key={preset.id} value={preset.id}>{preset.name}</MenuItem>
+                    ))}
+                  </Select>
+                  <Button variant="contained" onClick={handleApplyPreset}>Apply</Button>
+                </Box>
+
+                {/* Delete Preset */}
+                {selectedPresetId && (
+                  <Button variant="outlined" color="error" sx={{mb:2}} onClick={() => handleDeletePreset(selectedPresetId)}>
+                    Delete Preset
+                  </Button>
+                )}
+
+                {/* Save New Preset */}
+                <Box display="flex" gap={1} mb={2}>
+                  <TextField
+                    label="New Preset Name"
+                    value={newPresetName}
+                    onChange={(e) => setNewPresetName(e.target.value)}
+                    fullWidth
+                  />
+                  <Button variant="contained" onClick={handleSavePreset}>Save</Button>
+                </Box>
+
                 {/* Category Dropdown */}
                 <FormControl fullWidth style={{ marginBottom: 10 }} variant="outlined">
                   <InputLabel id="category-label">Category</InputLabel>
@@ -471,7 +561,7 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
                 </FormControl>
 
                 {/* Name Checkboxes */}
-                <Typography variant="subtitle1">Select Lines:</Typography>
+                <Typography variant="subtitle1" style={{ marginLeft: 2 }}>Select Lines:</Typography>
 
                 <FormControlLabel
                   control={
@@ -516,7 +606,7 @@ function LineChartComponent ({setActiveComponent, onParamsChange}) {
                   color="primary"
                   fullWidth
                   style={{ marginTop: 16 }}
-                  onClick={applyFilters}
+                  onClick={() => applyFilters()}
                 >
                   Apply
                 </Button>
