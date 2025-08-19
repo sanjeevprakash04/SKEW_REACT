@@ -23,7 +23,7 @@ function NotificationPage() {
             {/* Header Section */}
             <Box display="flex" justifyContent="space-between" alignItems="center" pb={0.5} ml={0.5}>
                 <Typography variant="h3" fontWeight="bold" color="inherit" fontSize={22} pt={1.5}>
-                    Notification
+                    Notifications
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, mr:1, }}>
                     <Button variant="contained" color="primary" sx={{ width: '150px' }} onClick={handleFetchAlerts}>
