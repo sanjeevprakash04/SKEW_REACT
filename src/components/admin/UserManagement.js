@@ -9,7 +9,7 @@ import Logo from './skew-logo-horizontal.png';
 
 function UserManagement({ role }) {
     // const {isConnected} = useContext(AppContext);
-    const { accessToken/*, refreshAccessToken */} = useContext(AuthContext);
+    const { accessToken/*, refreshAccessToken */, logoutUser} = useContext(AuthContext);
     const [data, setData] = useState([]);
     const [openModal, setOpenModal] = useState(false);
     const [newEmail, setNewEmail] = useState('');
@@ -27,13 +27,10 @@ function UserManagement({ role }) {
             console.error("Error fetching user data:", error);
 
             if (error.response?.status === 401) {
-                const newToken = await accessToken();
-                if (newToken) {
-                    fetchUserData(); // Retry with the new token
-                }
+                logoutUser();
             }
         }
-    }, [accessToken/*, refreshAccessToken*/]);
+    }, [accessToken/*, refreshAccessToken*/, logoutUser]);
 
     useEffect(() => {
         fetchUserData();

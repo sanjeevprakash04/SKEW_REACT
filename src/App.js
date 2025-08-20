@@ -284,6 +284,7 @@ function App(){
                                     <Route path="/admin/logs" element={<SystemLogs />} />
                                 </Route>
                                 <Route path="/help" element={<Help />} />
+                                <Route path="/notification" element={<NotificationPage />}/>
                             </Routes>
                         </Box>
                         </>

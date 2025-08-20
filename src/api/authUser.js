@@ -17,7 +17,7 @@ export const fetchUserData = async (token) => {
 };
 
 const useAuthUser = () => {
-  const { accessToken } = useContext(AuthContext);
+  const { accessToken, logoutUser } = useContext(AuthContext);
 
   const apiCall = async (url, method = 'GET', data = null) => {
       try {
@@ -26,10 +26,7 @@ const useAuthUser = () => {
           return response.data;
       } catch (error) {
           if (error.response?.status === 401) {
-              const newAccessToken = await accessToken();
-              if (newAccessToken) {
-                  return apiCall(url, method, data); // Retry request
-              }
+              logoutUser();
           }
           throw error;
       }
