@@ -10,7 +10,7 @@ import {
 import { useTheme } from "@emotion/react";
 import axios from "axios";
 
-function AlertsTable({ data, onLoad }) {
+function AlertsTable({ data, onLoad, showSnackbar }) {
   const theme = useTheme();
   const darkMode = theme.palette.mode === "dark";
 
@@ -31,8 +31,10 @@ function AlertsTable({ data, onLoad }) {
     try {
       await axios.put("http://127.0.0.1:8000/toggle-alert-status", { id });
       onLoad();
+      showSnackbar("Active status changed!", "success");
     } catch (error) {
       console.error("Error toggling alert:", error);
+      showSnackbar("Failed to change active status", "error");
     }
   };
 
@@ -40,8 +42,10 @@ function AlertsTable({ data, onLoad }) {
     try {
       await axios.delete("http://127.0.0.1:8000/delete-alert", { data: { id } });
       onLoad();
+      showSnackbar("Alert deleted successfully!", "success");
     } catch (error) {
       console.error("Error deleting alert:", error);
+      showSnackbar("Failed to delete alert", "error");
     }
   };
 
@@ -61,8 +65,10 @@ function AlertsTable({ data, onLoad }) {
       });
       setEditingRowId(null);
       onLoad();
+      showSnackbar("Alert updated successfully!", "success");
     } catch (error) {
       console.error("Error updating alert:", error);
+      showSnackbar("Failed to update alert", "error");
     }
   };
 
@@ -73,8 +79,8 @@ function AlertsTable({ data, onLoad }) {
   };
 
   return (
-    <Paper elevation={1} sx={{ width: "100%", height: "calc(100vh - 130px)", overflow: "hidden" }}>
-      <TableContainer sx={{ height: "calc(90vh - 125px)", mt: 1, overflow: "auto" }}>
+    <Paper elevation={1} sx={{ width: "100%", height: "calc(100vh - 170px)", overflow: "hidden" }}>
+      <TableContainer sx={{ height: "calc(90vh - 160px)", mt: 1, overflow: "auto" }}>
         <Table stickyHeader aria-label="alerts table">
           <TableHead>
             <TableRow>
@@ -96,7 +102,7 @@ function AlertsTable({ data, onLoad }) {
                     : index % 2 === 0 ? "inherit" : "#eee",
                 }}
               >
-                <TableCell>{row.id}</TableCell>
+                <TableCell>{row.displayId}</TableCell>
 
                 {/* Editable Name */}
                 <TableCell>

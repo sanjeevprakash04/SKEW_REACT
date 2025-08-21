@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Button, Modal, Backdrop, TextField, Typography, IconButton, } from '@mui/material';
+import { Box, Button, Modal, Backdrop, TextField, Typography, IconButton, Snackbar, Alert } from '@mui/material';
 import CloseIcon from "@mui/icons-material/Close";
 import AlertsTable from '../table/alertsTable';
 import axios from 'axios';
@@ -9,6 +9,7 @@ function NotificationSettings() {
     const [openModal, setOpenModal] = useState(false);
     const [newName, setNewName] = useState("");
     const [newCondition, setNewCondition] = useState("");
+    const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
     useEffect(() => {
         fetchAlertsData();   // fetch alerts on first render
@@ -17,9 +18,14 @@ function NotificationSettings() {
     const fetchAlertsData = async () => {
         try {
             const response = await axios.get("http://127.0.0.1:8000/get-alerts-data");
-            setData(response.data);
+            const mappedData = response.data.map((item, index) => ({
+                ...item,
+                displayId: index + 1,   // Sequential number for UI only
+            }));
+            setData(mappedData);
         } catch (error) {
             console.error("Error fetching alerts data:", error);
+            showSnackbar("Failed to load alerts", "error");
         }
     };
 
@@ -34,9 +40,19 @@ function NotificationSettings() {
             setNewName("");
             setNewCondition("");
             fetchAlertsData();
+            showSnackbar("Alert created successfully!", "success");
         } catch (error) {
             console.error("Error creating alert:", error);
+            showSnackbar("Failed to create alert", "error");
         }
+    };
+
+    const showSnackbar = (message, severity = "success") => {
+        setSnackbar({ open: true, message, severity });
+    };
+
+    const handleCloseSnackbar = () => {
+        setSnackbar({ ...snackbar, open: false });
     };
 
     return(
@@ -46,7 +62,8 @@ function NotificationSettings() {
                     Add Alert
                 </Button>
             </Box>
-            <AlertsTable data={data} onLoad={fetchAlertsData}/>
+
+            <AlertsTable data={data} onLoad={fetchAlertsData} showSnackbar={showSnackbar}/>
 
             {/* Modal for Create Alert */}
             <Modal
@@ -58,7 +75,7 @@ function NotificationSettings() {
                 closeAfterTransition
                 slots={{ backdrop: Backdrop }}
                 slotProps={{
-                backdrop: { sx: { backdropFilter: "blur(10px)" } },
+                    backdrop: { sx: { backdropFilter: "blur(10px)" } },
                 }}
             >
                 <Box
@@ -120,6 +137,18 @@ function NotificationSettings() {
                     </Button>
                 </Box>
             </Modal>
+
+            {/* Snackbar Notification */}
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            >
+                <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: "100%" }}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };
