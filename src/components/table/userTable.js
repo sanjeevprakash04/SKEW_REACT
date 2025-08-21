@@ -222,17 +222,16 @@ function UserTable({ data, role, accessToken, onLoad }) {
         </Table>
       </TableContainer>
       <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          sx={{
-            height: '10vh',
-            borderTop: '1px solid #ddd', // Adds a subtle top border only above pagination
-            color: 'inherit',
+        rowsPerPageOptions={[10, 25, 100]}
+        component="div"
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        sx={{
+          borderTop: '1px solid #ddd', // Adds a subtle top border only above pagination
+          color: 'inherit',
         }}
       />
     </Paper>

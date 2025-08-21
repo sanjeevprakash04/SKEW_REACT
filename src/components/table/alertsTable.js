@@ -173,6 +173,10 @@ function AlertsTable({ data, onLoad, showSnackbar }) {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        sx={{
+            borderTop: '1px solid #ddd', // Adds a subtle top border only above pagination
+            color: 'inherit',
+        }}
       />
     </Paper>
   );
