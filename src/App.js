@@ -34,6 +34,8 @@ function App(){
     const [activeComponent, setActiveComponent] = useState('');
     const [tableData, setTableData] = useState([]);
     const [meterData, setMeterData] = useState({});
+    const [alertsData, setAlertsData] = useState([]);
+
 
     const ws = useRef(null);  // WebSocket reference
     const logEndRef = useRef(null); // To scroll to the latest log
@@ -79,6 +81,11 @@ function App(){
                 }
                 if (data.meterData){
                     setMeterData(data.meterData);
+                    console.log("MeterData", meterData);
+                }
+                if (data.alertsData){
+                    setAlertsData(data.alertsData);
+                    console.log("Alerts", data.alertsData);
                 }
             } catch (error) {
                 console.error("Error parsing WebSocket message:", error);
@@ -229,7 +236,7 @@ function App(){
                                     <Route path="/admin/users" element={<UserManagement role={user?.role}/>} />
                                     <Route path="/admin/logs" element={<SystemLogs />} />
                                 </Route>
-                                <Route path="/notification" element={<NotificationPage />}/>
+                                <Route path="/notification" element={<NotificationPage alertsData={alertsData}/>}/>
                             </Routes>
                         </Box>
                     </>
@@ -284,7 +291,7 @@ function App(){
                                     <Route path="/admin/logs" element={<SystemLogs />} />
                                 </Route>
                                 <Route path="/help" element={<Help />} />
-                                <Route path="/notification" element={<NotificationPage />}/>
+                                <Route path="/notification" element={<NotificationPage alertsData={alertsData}/>}/>
                             </Routes>
                         </Box>
                         </>

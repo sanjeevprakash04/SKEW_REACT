@@ -3,7 +3,7 @@ import { Box, Typography, Divider, Button} from "@mui/material";
 import NotificationSettings from "../notificationSettings/NotificationSettings";
 import AlertsPage from "../alerts/Alerts";
 
-function NotificationPage() {
+function NotificationPage({ alertsData }) {
     const [activeComponent, setActiveComponent] = useState('alerts');
 
     useEffect(() => {
@@ -38,7 +38,7 @@ function NotificationPage() {
             <Divider sx={{ borderBottom: "1px solid" }} />
 
             <Box mt={0.5} height="calc(100vh - 130px)">
-                {activeComponent === 'alerts' && <AlertsPage />}
+                {activeComponent === 'alerts' && <AlertsPage alerts={alertsData}/>}
                 {activeComponent === 'settings' && <NotificationSettings />}
             </Box>
         </Box>

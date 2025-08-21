@@ -1,25 +1,6 @@
 import { Box, Card, CardContent, Typography } from "@mui/material";
 
-function AlertsPage() {
-  // Sample alerts (static data for design only)
-  const alerts = [
-    {
-      title: "System Error",
-      message: "Temperature exceeded safe limits.",
-      timestamp: "2025-08-19T09:30:00Z",
-    },
-    {
-      title: "Warning",
-      message: "Battery running low, please check.",
-      timestamp: "2025-08-19T08:45:00Z",
-    },
-    {
-      title: "Update",
-      message: "System restarted successfully.",
-      timestamp: "2025-08-19T08:00:00Z",
-    },
-  ];
-
+function AlertsPage({alerts}) {
   return (
     <Box
       mt={0.5}
@@ -51,19 +32,21 @@ function AlertsPage() {
             }}
           >
             <CardContent>
-              <Typography variant="subtitle1" fontWeight="bold">
-                {alert.title}
-              </Typography>
+              <Box sx={{display:'flex', justifyContent:'space-between'}}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  Alert : {alert.title}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  display="block"
+                  mt={1}
+                  sx={{ opacity: 0.8 }}
+                >
+                  {alert.timestamp}
+                </Typography>
+              </Box>
               <Typography variant="body2">
-                {alert.message}
-              </Typography>
-              <Typography
-                variant="caption"
-                display="block"
-                mt={1}
-                sx={{ opacity: 0.8 }}
-              >
-                {new Date(alert.timestamp).toLocaleString()}
+                Condition : {alert.message}
               </Typography>
             </CardContent>
           </Card>
